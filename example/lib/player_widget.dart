@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import './api_calls.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }
@@ -10,20 +10,25 @@ enum PlayingRouteState { speakers, earpiece }
 class PlayerWidget extends StatefulWidget {
   final String url;
   final PlayerMode mode;
+  final id;
 
   PlayerWidget(
-      {Key key, @required this.url, this.mode = PlayerMode.MEDIA_PLAYER})
+      {Key key,
+      @required this.url,
+      this.mode = PlayerMode.MEDIA_PLAYER,
+      this.id})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PlayerWidgetState(url, mode);
+    return _PlayerWidgetState(url, mode, id);
   }
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
   String url;
   PlayerMode mode;
+  String id;
 
   AudioPlayer _audioPlayer;
   AudioPlayerState _audioPlayerState;
@@ -41,13 +46,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   get _isPlaying => _playerState == PlayerState.playing;
   get _isPaused => _playerState == PlayerState.paused;
-  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
-  get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
-  get _isPlayingThroughEarpiece =>
-      _playingRouteState == PlayingRouteState.earpiece;
-
-  _PlayerWidgetState(this.url, this.mode);
+  _PlayerWidgetState(this.url, this.mode, this.id);
 
   @override
   void initState() {
@@ -78,30 +78,28 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             IconButton(
               key: Key('play_button'),
               onPressed: _isPlaying ? null : () => _play(),
-              iconSize: 64.0,
+              iconSize: 30.0,
               icon: Icon(Icons.play_arrow),
               color: Colors.cyan,
             ),
             IconButton(
               key: Key('pause_button'),
               onPressed: _isPlaying ? () => _pause() : null,
-              iconSize: 64.0,
+              iconSize: 30.0,
               icon: Icon(Icons.pause),
               color: Colors.cyan,
             ),
             IconButton(
               key: Key('stop_button'),
               onPressed: _isPlaying || _isPaused ? () => _stop() : null,
-              iconSize: 64.0,
+              iconSize: 30.0,
               icon: Icon(Icons.stop),
               color: Colors.cyan,
             ),
             IconButton(
-              onPressed: _earpieceOrSpeakersToggle,
-              iconSize: 64.0,
-              icon: _isPlayingThroughEarpiece
-                  ? Icon(Icons.volume_up)
-                  : Icon(Icons.hearing),
+              onPressed: () => shareEvent(id),
+              iconSize: 30.0,
+              icon: Icon(Icons.share),
               color: Colors.cyan,
             ),
           ],
@@ -110,7 +108,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: EdgeInsets.all(1.0),
               child: Stack(
                 children: [
                   Slider(
@@ -129,17 +127,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 ],
               ),
             ),
-            Text(
-              _position != null
-                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                  : _duration != null
-                      ? _durationText
-                      : '',
-              style: TextStyle(fontSize: 24.0),
-            ),
+            SizedBox(height: 30)
           ],
         ),
-        Text('State: $_audioPlayerState')
       ],
     );
   }
@@ -220,9 +210,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
-    final result = await _audioPlayer.play(url, position: playPosition);
-    if (result == 1) setState(() => _playerState = PlayerState.playing);
 
+    final result = await _audioPlayer.play(url, position: playPosition);
+
+    final response = await playEvent(id);
+    if (result == 1) setState(() => _playerState = PlayerState.playing);
     // default playback rate is 1.0
     // this should be called after _audioPlayer.play() or _audioPlayer.resume()
     // this can also be called everytime the user wants to change playback rate in the UI
