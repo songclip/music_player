@@ -21,7 +21,7 @@ Future<List<Clip>> fetchClips() async {
   List<Clip> clips = [];
 
   final response = await http.get(
-    "https://api.songclip.com/songclips/?q=love&shuffle=true&page=1&limit=20&minLength=10&maxLength=300",
+    "https://api.songclip.com/songclips/?q=love&uniqueId=d35ef6f6ee1b&shuffle=true&page=1&limit=20&minLength=10&maxLength=300",
     headers: {
       HttpHeaders.authorizationHeader: authHeader,
       "apikey": apikey,
@@ -42,11 +42,9 @@ Future<Response> playEvent(clipId) {
       "apikey": apikey,
     },
     body: jsonEncode(<String, Object>{
-      'context': {
-        'sourcePlatform': 'iOS',
-        'sessionId': 'U7BMARUXDWNY',
-        'uniqueId': 'd35ef6f6ee1b',
-      }
+      'sourcePlatform': 'iOS',
+      'sessionId': 'U7BMARUXDWNY',
+      'uniqueId': 'd35ef6f6ee1b',
     }),
   );
 }
@@ -59,11 +57,9 @@ Future<http.Response> shareEvent(clipId) async {
       "apikey": apikey,
     },
     body: jsonEncode(<String, Object>{
-      'context': {
-        'sourcePlatform': 'iOS',
-        'sessionId': 'U7BMARUXDWNY',
-        'uniqueId': 'd35ef6f6ee1b',
-      }
+      'sourcePlatform': 'iOS',
+      'sessionId': 'U7BMARUXDWNY',
+      'uniqueId': 'd35ef6f6ee1b',
     }),
   );
   Fluttertoast.showToast(
