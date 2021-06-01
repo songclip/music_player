@@ -21,7 +21,7 @@ Future<List<Clip>> fetchClips() async {
   List<Clip> clips = [];
 
   final response = await http.get(
-    "https://api.songclip.com/songclips/?q=love&uniqueId=d35ef6f6ee1b&shuffle=true&page=1&limit=20&minLength=10&maxLength=300",
+    "https://api.songclip.com/songclips/?q=love&uniqueId=75a61f32-c297-11eb-8529-0242ac130003&shuffle=true&page=1&limit=20&minLength=10&maxLength=300",
     headers: {
       HttpHeaders.authorizationHeader: authHeader,
       "apikey": apikey,
@@ -44,7 +44,7 @@ Future<Response> playEvent(clipId) {
     body: jsonEncode(<String, Object>{
       'sourcePlatform': 'iOS',
       'sessionId': 'U7BMARUXDWNY',
-      'uniqueId': 'd35ef6f6ee1b',
+      'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
     }),
   );
 }
@@ -59,7 +59,7 @@ Future<http.Response> shareEvent(clipId) async {
     body: jsonEncode(<String, Object>{
       'sourcePlatform': 'iOS',
       'sessionId': 'U7BMARUXDWNY',
-      'uniqueId': 'd35ef6f6ee1b',
+      'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
     }),
   );
   Fluttertoast.showToast(
@@ -71,6 +71,36 @@ Future<http.Response> shareEvent(clipId) async {
       textColor: Colors.white,
       fontSize: 16.0);
   return response;
+}
+
+Future<Response> musicOpen() {
+  return http.post(
+    'https://api.songclip.com/events/music-open',
+    headers: {
+      HttpHeaders.authorizationHeader: authHeader,
+      "apikey": apikey,
+    },
+    body: jsonEncode(<String, Object>{
+      'sourcePlatform': 'iOS',
+      'sessionId': 'U7BMARUXDWNY',
+      'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
+    }),
+  );
+}
+
+Future<Response> appOpen() {
+  return http.post(
+    'https://api.songclip.com/events/app-open',
+    headers: {
+      HttpHeaders.authorizationHeader: authHeader,
+      "apikey": apikey,
+    },
+    body: jsonEncode(<String, Object>{
+      'sourcePlatform': 'iOS',
+      'sessionId': 'U7BMARUXDWNY',
+      'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
+    }),
+  );
 }
 
 /*
