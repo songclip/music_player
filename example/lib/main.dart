@@ -33,7 +33,7 @@ class _ExampleAppState extends State<ExampleApp> {
   @override
   void initState() {
     super.initState();
-
+    initialSongclipEvents();
     if (kIsWeb) {
       // Calls to Platform.isIOS fails on web
       return;
@@ -44,6 +44,11 @@ class _ExampleAppState extends State<ExampleApp> {
       }
       advancedPlayer.startHeadlessService();
     }
+  }
+
+  void initialSongclipEvents() async {
+    await appOpen();
+    await musicOpen();
   }
 
   Widget songclipApi() {
