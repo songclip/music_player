@@ -14,8 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
   Ideally you will proxy the requests to a server, which stores the API key and acts
    as a middleman to the Songclip API.
 */
-final authHeader = 'YOUR_HEADER_HERE'; //change this to your auth header value
-final apikey = 'YOUR APIKEY_HERE'; //change to your API key
+final authHeader = 'YOUR HEADER HERE'; //change this to your auth header value
+final apikey = 'YOUR API_KEY HERE'; //change to your API key
 
 Future<List<Clip>> fetchClips() async {
   List<Clip> clips = [];
@@ -36,7 +36,7 @@ Future<List<Clip>> fetchClips() async {
 
 Future<Response> playEvent(clipId) {
   return http.post(
-    'https://api.songclip.com/songclips/${clipId}/events/play',
+    'https://api.songclip.com/events/play',
     headers: {
       HttpHeaders.authorizationHeader: authHeader,
       "apikey": apikey,
@@ -45,13 +45,14 @@ Future<Response> playEvent(clipId) {
       'sourcePlatform': 'iOS',
       'sessionId': 'U7BMARUXDWNY',
       'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
+      'clipId': '${clipId}'
     }),
   );
 }
 
 Future<http.Response> shareEvent(clipId) async {
   final response = await http.post(
-    'https://api.songclip.com/songclips/${clipId}/events/share',
+    'https://api.songclip.com/events/share',
     headers: {
       HttpHeaders.authorizationHeader: authHeader,
       "apikey": apikey,
@@ -60,6 +61,7 @@ Future<http.Response> shareEvent(clipId) async {
       'sourcePlatform': 'iOS',
       'sessionId': 'U7BMARUXDWNY',
       'uniqueId': '75a61f32-c297-11eb-8529-0242ac130003',
+      'clipId': '${clipId}'
     }),
   );
   Fluttertoast.showToast(
